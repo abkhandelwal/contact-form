@@ -16,21 +16,25 @@ export class ContactFormComponent implements OnInit {
   con: Contact[];
   contact: Contact;
  newcon: Contact = new Contact();
-  Flag = false;
+  Flag: boolean;
+  ShowAllFlag: boolean;
   constructor( private _auth: AuthService, private _http: HttpClient, private _form: FormBuilder) {
   }
 
   ngOnInit() {
     this.createForm();
+    this.Flag = false;
   }
 
   getAll(): void {
     // console.log('==========================inside getAll');
     // this._http.get<Contact[]>('http://localhost:8080/Demo/getAllContacts').subscribe(data => {
     //  this.con = data;
-
+    this.Flag = true;
+    this.ShowAllFlag = false;
     this._auth.fetchAll().subscribe(resp => {
       this.con = resp;
+
     });
     }
     createForm() {
@@ -41,6 +45,8 @@ export class ContactFormComponent implements OnInit {
       });
     }
       contactForm() {
+        this.ShowAllFlag = true;
+        this.Flag = false;
        this._auth.insertRecord(this.form.value).subscribe(resp => {
          console.log('record Insreted' + JSON.stringify(resp));
          this.contact = resp;
