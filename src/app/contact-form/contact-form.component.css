@@ -1,0 +1,11 @@
+.contact-actions a {
+  display: inline-block;
+  text-align: center;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+
+}
+.contact-actions{
+float: right;
+}
