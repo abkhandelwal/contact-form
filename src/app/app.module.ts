@@ -8,12 +8,14 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { ContactFormComponent } from './contact-form/contact-form.component';
 import { HttpClientModule } from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FieldErrorDisplayComponent } from './field-error-display/field-error-display.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
-    ContactFormComponent
+    ContactFormComponent,
+    FieldErrorDisplayComponent
   ],
   imports: [
     BrowserModule,

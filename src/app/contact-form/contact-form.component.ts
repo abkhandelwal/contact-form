@@ -2,7 +2,7 @@ import { Contact } from './../../model/contact';
 import { AuthService } from './../auth.service';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormBuilder, FormGroup ,  ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup ,  ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
 import { JsonPipe } from '@angular/common/src/pipes/json_pipe';
 
 
@@ -26,6 +26,18 @@ export class ContactFormComponent implements OnInit {
     this.Flag = false;
   }
 
+  isFieldValid(field: string) {
+    console.log('is field Valide called');
+    return !this.form.get(field).valid && this.form.get(field).touched;
+  }
+
+  displayFieldCss(field: string) {
+    return {
+      'has-error': this.isFieldValid(field),
+      'has-feedback': this.isFieldValid(field)
+    };
+  }
+
   getAll(): void {
     // console.log('==========================inside getAll');
     // this._http.get<Contact[]>('http://localhost:8080/Demo/getAllContacts').subscribe(data => {
@@ -39,21 +51,42 @@ export class ContactFormComponent implements OnInit {
     }
     createForm() {
       this.form = this._form.group({
-        name: '',
-        phoneno: '',
-        country: ''
+        name: ['', Validators.required],
+        phoneno:  ['', Validators.required],
+        country:  ['', Validators.required]
       });
     }
       contactForm() {
-        this.ShowAllFlag = true;
-        this.Flag = false;
-       this._auth.insertRecord(this.form.value).subscribe(resp => {
-         console.log('record Insreted' + JSON.stringify(resp));
-         this.contact = resp;
-         this.form.reset();
-       });
+
+        console.log(this.form);
+        if (this.form.valid) {
+          this.ShowAllFlag = true;
+          this.Flag = false;
+         this._auth.insertRecord(this.form.value).subscribe(resp => {
+           console.log('record Insreted' + JSON.stringify(resp));
+           this.contact = resp;
+           this.form.reset();
+         });
+          console.log('form submitted');
+        } else {
+          this.validateAllFormFields(this.form);
+        }
      //  this.getAll();
       }
+
+
+      validateAllFormFields(formGroup: FormGroup) {
+        Object.keys(formGroup.controls).forEach(field => {
+          console.log(field);
+          const control = formGroup.get(field);
+          if (control instanceof FormControl) {
+            control.markAsTouched({ onlySelf: true });
+          } else if (control instanceof FormGroup) {
+            this.validateAllFormFields(control);
+          }
+        });
+      }
+
       deleteContact(id: string) {
      this._auth.deleteRecord(id).subscribe(resp => {
     console.log('contact deleted' + resp);
@@ -65,7 +98,7 @@ export class ContactFormComponent implements OnInit {
     editContact(contact: Contact) {
       this._auth.UpdateContact(contact).subscribe(resp => {
         console.log('record updated' + resp);
-      })
+      });
     }
 
 
