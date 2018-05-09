@@ -29,6 +29,7 @@ deleteRecord(id) {
 
 
 UpdateContact(data: Contact): Observable<Contact> {
+  console.log(data.id, data);
   return this._http.put<Contact>(this.base_url + '/' + data.id, data);
 }
 private handleError(error: any): Promise<any> {

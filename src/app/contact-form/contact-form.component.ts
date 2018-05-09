@@ -18,6 +18,10 @@ export class ContactFormComponent implements OnInit {
  newcon: Contact = new Contact();
   Flag: boolean;
   ShowAllFlag: boolean;
+  editing = false;
+  AddEditButtton: String = 'ADD';
+  id: string;
+  UpdateAdded : string;
   constructor( private _auth: AuthService, private _http: HttpClient, private _form: FormBuilder) {
   }
 
@@ -41,17 +45,32 @@ export class ContactFormComponent implements OnInit {
       this.form = this._form.group({
         name: '',
         phoneno: '',
-        country: ''
+        country: '',
+        id: ''
       });
     }
       contactForm() {
         this.ShowAllFlag = true;
+        this.UpdateAdded = 'added';
         this.Flag = false;
+        if (!this.editing) {
        this._auth.insertRecord(this.form.value).subscribe(resp => {
          console.log('record Insreted' + JSON.stringify(resp));
+         console.log(this.con);
          this.contact = resp;
          this.form.reset();
        });
+      } else {
+         console.log(this.form.value);
+        // this.contact.name = this.form.value.name;
+         //this.contact.phoneno = this.form.value.phoneno;
+         //this.contact.country = this.form.value.country;
+     //    this.contact.id = this.id;
+
+         this.updateContact(this.form.value);
+         this.editing = false;
+         this.AddEditButtton = 'Add';
+       }
      //  this.getAll();
       }
       deleteContact(id: string) {
@@ -62,13 +81,31 @@ export class ContactFormComponent implements OnInit {
     }
 
 
-    editContact(contact: Contact) {
+    updateContact(contact: Contact) {
+     // console.log(contact.id);
       this._auth.UpdateContact(contact).subscribe(resp => {
         console.log('record updated' + resp);
-      })
+        this.contact = resp;
+      });
+      this.UpdateAdded = 'updated';
+      this.Flag = false;
+      this.form.reset();
     }
 
 
+
+    editContact(contact: Contact) {
+      this.editing = true;
+      this.AddEditButtton = 'Edit';
+      this.form.patchValue(
+        {name : contact.name,
+        phoneno: contact.phoneno,
+        country : contact.country,
+        id : contact.id
+      }
+      );
+     // this.id = contact.id;
+    }
   //  this.con = this.con.filter(contact => contact.id !== id)
     private handleError(error: any): Promise<any> {
       console.error('Some error occured', error);

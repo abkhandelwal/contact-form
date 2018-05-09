@@ -11,18 +11,20 @@
   </div>
   <div class="form-group">
     <label for="exampleFormControlInput3"> Address</label>
-    <input type="text" class="form-control" id="exampleFormControlInput3" placeholder="Enter the Country"  formControlName="country">
+    <input type="text" class="form-control" id="exampleFormControlInput3" placeholder="Enter the Address"  formControlName="country">
   </div>
-  <div>
-    <button type="submit" > Add</button>
+  <input type="text" class="form-control" id="exampleFormControlInput2" placeholder="Enter the Phone" formControlName="id" hidden=true>
+  <div class="Addbutton">
+    <button type="submit"  class="btn btn-primary"  > {{AddEditButtton}}</button>
+    <span class="showButton">
+      <button (click)=getAll()  type ="button" class="btn btn-primary" > Show All</button>
+    </span>
+
   </div>
 </form>
 <div>
-    <button (click)=getAll()> Show All</button>
-</div>
-<div>
   <ul class="list-group" [hidden]='Flag'>
-    <li class="list-group-item" *ngIf='contact'>{{contact.name +" "+"has been added to the contact"}}</li>
+    <li class="list-group-item" *ngIf='contact'>{{contact.name +"'s"+" "+"contact has been" +" "+ UpdateAdded + " to the contact"}}</li>
   </ul>
     <ul class="list-group" >
         <li class="list-group-item" *ngFor ='let posts of con' [hidden]='ShowAllFlag'>
@@ -37,7 +39,7 @@
           </span>
 
           <span class="contact-actions">
-              <a  (click)='updateContact()'>
+              <a  (click)='editContact(posts)'>
                 <i class="material-icons edit">edit</i>
               </a>
               <a (click)='deleteContact(posts.id)'>
